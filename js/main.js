@@ -2,22 +2,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Estado da aplicação
     let filteredData = [];
-    let currentDre = {}; // Variável para guardar o DRE atual para exportação
+    let currentDre = {};
 
-    // Mapeamento dos handlers dos eventos para o módulo de UI
+    // Mapeamento dos handlers
     const eventHandlers = {
         onFileUpload: handleFileUpload,
         onFilterChange: handleFilterChange,
         onGetAi: handleGetAi,
         onExportCSV: () => UIModule.exportToCSV(currentDre),
-        onSendSim: handleSendSim,// Lógica de disparo reativada
+        onSendSim: handleSendSim,
         onSendDreEmail: handleSendDreEmail
     };
 
-    // Inicializa os 'ouvintes' de eventos na UI
     UIModule.initListeners(eventHandlers);
 
-    // Handler para o upload de ficheiro
     function handleFileUpload(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
@@ -28,15 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
             complete(results) {
                 DataModule.setData(results.data);
                 applyInitialState();
+                UIModule.showNotification('Ficheiro CSV carregado com sucesso!', 'success');
             },
             error(err) {
                 console.error(err);
-                alert('Erro ao ler CSV: ' + err.message);
+                UIModule.showNotification('Erro ao ler o ficheiro CSV.', 'error');
             }
         });
     }
 
-    // Prepara o estado inicial da aplicação após os dados serem carregados
     function applyInitialState() {
         const all = DataModule.getAll();
         const companies = Array.from(new Set(all.map(d => d.company).filter(Boolean))).sort();
@@ -44,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         handleFilterChange();
     }
 
-    // Handler para qualquer mudança nos filtros
     function handleFilterChange() {
         const filters = UIModule.getFilters();
         const all = DataModule.getAll();
@@ -60,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAll();
     }
 
-    // Renderiza todos os componentes da UI com os dados filtrados
     function renderAll() {
         currentDre = DreModule.calculateDRE(filteredData);
         UIModule.renderCards(currentDre);
@@ -69,24 +65,54 @@ document.addEventListener('DOMContentLoaded', () => {
         UIModule.renderChart(filteredData);
     }
 
-    // --- FUNÇÃO PARA O WEBHOOK REATIVADA ---
     async function handleSendSim(transactionData) {
         if (!transactionData) {
-            alert("Clique no botão 'Disparar' numa linha da tabela com status 'previsto'.");
+            UIModule.showNotification("Dados da transação não encontrados.", 'error');
             return;
         }
         try {
-            console.log('Enviando para o webhook:', transactionData);
-            const resp = await ApiModule.sendChargeSimulation(transactionData);
-            alert('Disparo enviado para o webhook. Resposta: ' + JSON.stringify(resp));
+            UIModule.showNotification("A disparar lembrete...", 'success');
+            await ApiModule.sendChargeSimulation(transactionData);
+            // Pode adicionar uma notificação de sucesso aqui se o webhook responder
         } catch (err) {
             console.error(err);
-            alert('Erro ao enviar para o webhook: ' + err.message);
+            UIModule.showNotification('Erro ao enviar o lembrete.', 'error');
+        }
+    }
+    
+    async function handleSendDreEmail() {
+        const btn = document.getElementById('sendDreEmailBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'A enviar...';
+
+        try {
+            const filters = UIModule.getFilters();
+            const payload = {
+                dre: currentDre,
+                filters: {
+                    company: filters.company,
+                    from: filters.from ? filters.from.toISOString().slice(0, 10) : 'N/A',
+                    to: filters.to ? filters.to.toISOString().slice(0, 10) : 'N/A'
+                }
+            };
+            await ApiModule.sendDreEmail(payload);
+            UIModule.showNotification('Relatório DRE enviado com sucesso!', 'success');
+        } catch (err) {
+            console.error(err);
+            UIModule.showNotification('Erro ao enviar o relatório.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         }
     }
 
-    // Handler para obter insights da IA
     async function handleGetAi() {
+        const btn = document.getElementById('getAiBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'A processar...';
+
         const outputEl = document.getElementById('aiOutput');
         outputEl.innerHTML = '<p>A pedir insights à IA...</p>';
         
@@ -108,41 +134,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const parts = aiText.split('**Insight:**');
                 const summary = parts[0].trim().replace(/\n/g, '<br>');
                 const insight = parts[1] ? parts[1].trim().replace(/\n/g, '<br>') : '';
-
                 let formattedHtml = `<p>${summary}</p>`;
                 if (insight) {
-                    formattedHtml += `<div class="insight-highlight"><strong>Insight Acionável:</strong><p>${insight}</p></div>`;
+                    formattedHtml += `<div class="insight-highlight"><strong>Insight:</strong><p>${insight}</p></div>`;
                 }
-                
                 outputEl.innerHTML = formattedHtml;
             } else {
                 outputEl.innerText = 'Resposta recebida, mas em formato inesperado:\n' + JSON.stringify(resp, null, 2);
             }
-
         } catch (err) {
-            outputEl.innerHTML = `<p class="error-message">Erro ao comunicar com o webhook de IA: ${err.message}</p>`;
+            outputEl.innerHTML = `<p class="error-message">Erro ao comunicar com o webhook de IA.</p>`;
             console.error(err);
-        }
-    }
-     async function handleSendDreEmail() {
-        const filters = UIModule.getFilters();
-        // Prepara o payload com os dados do DRE e os filtros aplicados
-        const payload = {
-            dre: currentDre,
-            filters: {
-                company: filters.company,
-                from: filters.from ? filters.from.toISOString().slice(0, 10) : 'N/A',
-                to: filters.to ? filters.to.toISOString().slice(0, 10) : 'N/A'
-            }
-        };
-
-        try {
-            alert('A enviar relatório DRE para o webhook...');
-            const resp = await ApiModule.sendDreEmail(payload);
-            alert('Relatório enviado com sucesso! Resposta: ' + JSON.stringify(resp));
-        } catch (err) {
-            console.error(err);
-            alert('Erro ao enviar o relatório DRE: ' + err.message);
+            UIModule.showNotification('Erro ao obter insights da IA.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         }
     }
 });

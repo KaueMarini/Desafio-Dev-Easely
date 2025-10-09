@@ -12,6 +12,7 @@ const UIModule = (function() {
         document.getElementById('getAiBtn').addEventListener('click', handlers.onGetAi);
         document.getElementById('exportCsvBtn').addEventListener('click', handlers.onExportCSV);
         document.getElementById('sendDreEmailBtn').addEventListener('click', handlers.onSendDreEmail);
+        
         // Listener reativado para cliques nos botões da tabela
         document.querySelector('#txTable tbody').addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('simulate-btn')) {
@@ -57,7 +58,6 @@ const UIModule = (function() {
     function renderTable(data) {
         const tbody = document.querySelector('#txTable tbody');
         tbody.innerHTML = '';
-        // Adicionando a coluna "Ação" de volta ao cabeçalho
         document.querySelector('#txTable thead tr').innerHTML = `
             <th>Data</th>
             <th>Cliente</th>
@@ -146,6 +146,22 @@ const UIModule = (function() {
         document.body.removeChild(link);
     }
 
+    // --- NOVA FUNÇÃO DE NOTIFICAÇÃO ---
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notification-container');
+        if (!container) return; // Garante que o container exista
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        container.appendChild(notification);
+
+        // Remove a notificação após a animação (5 segundos)
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
+
     function formatBRL(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0); }
     function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('pt-BR', { timeZone: 'UTC' }); }
     function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
@@ -158,6 +174,7 @@ const UIModule = (function() {
         renderTable, 
         renderChart, 
         renderCount,
-        exportToCSV
+        exportToCSV,
+        showNotification // <-- Exporta a nova função
     };
 })();

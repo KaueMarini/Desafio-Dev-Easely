@@ -1,4 +1,4 @@
-/* ---- GERAL & VARIÁVEIS ---- */
+/*GERAL & VARIAVEIS*/
 :root {
     --bg: #f8fafc;
     --surface: #ffffff;
@@ -22,7 +22,7 @@ body {
     line-height: 1.6;
 }
 
-/* ---- LAYOUT PRINCIPAL ---- */
+/*LAYOUT PRINCIPAL*/
 .topbar {
     background: linear-gradient(90deg, var(--primary), var(--accent));
     color: #fff;
@@ -56,7 +56,7 @@ body {
     font-size: 14px;
 }
 
-/* ---- SECÇÕES ---- */
+/*SECÇÕES*/
 section {
     background: var(--surface);
     padding: 20px;
@@ -66,7 +66,7 @@ section {
     margin-top: 20px;
 }
 
-/* ---- CONTROLOS E FILTROS ---- */
+/*CONTROLOS E FILTROS*/
 .controls {
     display: flex;
     justify-content: space-between;
@@ -113,7 +113,7 @@ input[type="file"] {
     display: none;
 }
 
-/* ---- BOTÕES ---- */
+/*BOTÕES*/
 .btn {
     background: linear-gradient(90deg, var(--accent), var(--primary));
     color: #fff;
@@ -138,7 +138,7 @@ input[type="file"] {
     border: 1px solid var(--border-color);
 }
 
-/* ---- CARDS ---- */
+/*CARDS*/
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -163,7 +163,7 @@ input[type="file"] {
     color: var(--font-color);
 }
 
-/* ---- GRÁFICO E TABELA ---- */
+/*RÁFICO E TABELA*/
 .visuals {
     display: grid;
     grid-template-columns: 3fr 2fr;
@@ -211,7 +211,7 @@ tbody tr:hover {
     padding: 6px 10px;
 }
 
-/* ---- SIMULAÇÃO BACKEND ---- */
+
 .ai-output {
     background: #f1f5f9;
     color: var(--font-color);
@@ -225,7 +225,7 @@ tbody tr:hover {
     white-space: pre-wrap;
 }
 
-/* ---- RESPONSIVIDADE ---- */
+
 @media(max-width: 1000px) {
     .visuals {
         grid-template-columns: 1fr;
@@ -235,19 +235,17 @@ tbody tr:hover {
         justify-content: flex-start;
     }
 }
-/* ---- ESTILOS ADICIONAIS PARA A TABELA (ADICIONE AO FINAL DO SEU CSS) ---- */
 
-/* Estilo para a linha de transação não paga */
 .unpaid-row {
-    background-color: #fff1f2 !important; /* Um fundo rosa claro */
-    color: #9f1239; /* Texto num tom de vermelho escuro */
+    background-color: #fff1f2 !important; 
+    color: #9f1239; 
 }
 
 .unpaid-row:hover {
-    background-color: #ffe4e6 !important; /* Um rosa um pouco mais escuro no hover */
+    background-color: #ffe4e6 !important;
 }
 
-/* "Badges" de Status para clareza */
+
 .status-badge {
     padding: 3px 8px;
     border-radius: 12px;
@@ -266,18 +264,18 @@ tbody tr:hover {
     color: #991b1b;
 }
 
-/* Valores com cores */
+
 .value-revenue {
-    color: #166534; /* Verde para receitas */
+    color: #166534; 
     font-weight: 500;
 }
 
 .value-expense {
-    color: #991b1b; /* Vermelho para despesas */
+    color: #991b1b; 
     font-weight: 500;
 }
 
-/* Botão pequeno para a tabela */
+
 .btn-small {
     padding: 4px 10px;
     font-size: 12px;
@@ -287,9 +285,9 @@ tbody tr:hover {
     cursor: pointer;
     border: none;
 }
-/* ---- ESTILOS ADICIONAIS PARA O OUTPUT DA IA ---- */
 
-/* Remove o estilo de 'pre' e trata como um div normal */
+
+
 #aiOutput {
     white-space: normal;
     font-family: inherit;
@@ -302,7 +300,7 @@ tbody tr:hover {
 }
 
 #aiOutput .insight-highlight {
-    background-color: #f0f9ff; /* Um azul muito claro */
+    background-color: #f0f9ff; 
     border-left: 4px solid var(--primary);
     padding: 15px;
     margin-top: 15px;
@@ -316,14 +314,14 @@ tbody tr:hover {
 }
 
 #aiOutput .error-message {
-    color: #ef4444; /* Vermelho para mensagens de erro */
+    color: #ef4444;
     font-weight: 500;
 }
 
 .value-cell {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre o ícone e o texto */
+    gap: 8px; 
     font-weight: 500;
 }
 
@@ -339,9 +337,55 @@ tbody tr:hover {
 }
 
 .indicator-revenue {
-    background-color: #16a34a; /* Verde sucesso */
+    background-color: #16a34a; 
 }
 
 .indicator-expense {
-    background-color: #ef4444; /* Vermelho perigo */
+    background-color: #ef4444; 
+}
+
+#notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(120%);
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 4.5s forwards;
+}
+
+.notification.success {
+    background: linear-gradient(90deg, #10b981, #14b8a6);
+}
+
+.notification.error {
+    background: linear-gradient(90deg, #f43f5e, #ef4444);
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translateX(120%);
+    }
 }
