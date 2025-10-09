@@ -1,11 +1,8 @@
 // api.js — funções de comunicação com backend (n8n webhooks)
 const ApiModule = (function() {
-
-    // --- WEBHOOKS FIXOS ---
-    // Adicione aqui os seus webhooks para não precisar de os digitar na tela
     const AI_INSIGHTS_WEBHOOK = 'https://n8n.srv1005861.hstgr.cloud/webhook/c25c41e6-3281-487a-9805-20d6060e63af';
     const CHARGE_SIMULATION_WEBHOOK = 'https://n8n.srv1005861.hstgr.cloud/webhook/a6a7bc5b-5c3e-4db4-97d5-eb228523d09c';
-    const DRE_EMAIL_WEBHOOK = 'https://n8n.srv1005861.hstgr.cloud/webhook/63e685df-7c22-4856-8347-2aacaeda7b67'; // <-- CRIE E COLE O NOVO URL DO WEBHOOK AQUI
+    const DRE_EMAIL_WEBHOOK = 'https://n8n.srv1005861.hstgr.cloud/webhook/63e685df-7c22-4856-8347-2aacaeda7b67'; 
 
     /**
      * Função genérica para fazer requisições POST com JSON.
