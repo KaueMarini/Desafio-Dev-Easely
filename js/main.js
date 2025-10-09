@@ -1,151 +1,143 @@
-// Bootstrap principal: conecta módulos e mantém estado de filtro
-let filteredData = [];
-
+// main.js - O orquestrador da aplicação
 document.addEventListener('DOMContentLoaded', () => {
-  UIModule.initListeners({
-    onFileUpload: handleFileUpload,
-    onLoadExample: loadExampleData,
-    onFilterChange: handleFilterChange,
-    onSendSim: handleSendSim,
-    onGetAi: handleGetAi
-  });
-});
+    // Estado da aplicação
+    let filteredData = [];
 
-function handleFileUpload(e){
-  const file = e.target.files && e.target.files[0];
-  if(!file) return;
-  Papa.parse(file, { header:true, skipEmptyLines:true, dynamicTyping:true,
-    complete(results){ DataModule.setData(results.data); applyInitialState(); },
-    error(err){ console.error(err); alert('Erro ao ler CSV: ' + err.message); }
-  });
-}
+    // Mapeamento dos handlers dos eventos para o módulo de UI
+    const eventHandlers = {
+        onFileUpload: handleFileUpload,
+        onLoadExample: loadExampleData,
+        onFilterChange: handleFilterChange,
+        onSendSim: handleSendSim,
+        onGetAi: handleGetAi
+    };
 
-function loadExampleData(){
-  fetch('example-data.csv').then(r=>r.text()).then(txt=>{
-    const results = Papa.parse(txt, {header:true,skipEmptyLines:true,dynamicTyping:true});
-    DataModule.setData(results.data); applyInitialState();
-  }).catch(err=>{console.error(err); alert('Erro ao carregar exemplo: '+err.message)});
-}
+    // Inicializa os 'ouvintes' de eventos na UI
+    UIModule.initListeners(eventHandlers);
 
-function applyInitialState(){
-  const all = DataModule.getAll();
-  const companies = Array.from(new Set(all.map(d=>d.company).filter(Boolean))).sort();
-  UIModule.populateCompanySelect(companies);
-  // set default filters empty
-  filteredData = all.slice();
-  renderAll();
-}
-
-function handleFilterChange(){
-  const sel = document.getElementById('companySelect');
-  const dateFrom = document.getElementById('dateFrom').value;
-  const dateTo = document.getElementById('dateTo').value;
-  const text = (document.getElementById('textSearch') || {}).value || '';
-  const company = sel.value;
-  const from = dateFrom ? startOfDay(new Date(dateFrom)) : null;
-  const to = dateTo ? endOfDay(new Date(dateTo)) : null;
-
-  const all = DataModule.getAll();
-  // primeiro aplicar busca textual (se houver)
-  let candidates = text ? DataModule.searchText(text) : all;
-  filteredData = candidates.filter(tx => {
-    if(company && company !== 'all' && tx.company !== company) return false;
-    if(from && tx.date < from) return false;
-    if(to && tx.date > to) return false;
-    return true;
-  });
-  renderAll();
-}
-
-function renderAll(){
-  const dre = DreModule.calculateDRE(filteredData);
-  UIModule.renderCards(dre);
-  UIModule.renderTable(filteredData);
-  UIModule.renderCount(filteredData.length, DataModule.getAll().length);
-  UIModule.renderChart(filteredData);
-}
-
-async function handleSendSim(){
-  const url = document.getElementById('webhookUrl').value.trim();
-  if(!url){ alert('Insira a URL do webhook do n8n (campo acima) para enviar a simulação.'); return; }
-  try{
-    const resp = await ApiModule.sendChargeSimulation(url, filteredData.slice(0,50));
-    alert('Simulação enviada. Resposta: ' + JSON.stringify(resp));
-  }catch(err){ console.error(err); alert('Erro ao enviar: ' + err.message); }
-}
-
-async function handleGetAi(){
-  const url = document.getElementById('webhookUrl').value.trim();
-  const out = document.getElementById('aiOutput');
-  if(!url){ out.innerText = 'Insira a URL do webhook do n8n para pedir insights.'; return; }
-  out.innerText = 'A pedir insights...';
-  try{
-    const resp = await ApiModule.getAIInsights(url, filteredData);
-    out.innerText = JSON.stringify(resp, null, 2);
-  }catch(err){ out.innerText = 'Erro: ' + err.message; }
-}
-
-function startOfDay(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
-function endOfDay(d){ const x = new Date(d); x.setHours(23,59,59,999); return x; }
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    // --- 1. SELEÇÃO DOS ELEMENTOS DO DOM ---
-    const fileInput = document.getElementById('file-input');
-    const companySelect = document.getElementById('company-select');
-    const startDateInput = document.getElementById('start-date');
-    const endDateInput = document.getElementById('end-date');
-
-    const initialMessage = document.getElementById('initial-message');
-    const dashboardContent = document.getElementById('dashboard-content');
-
-    // --- 2. VARIÁVEIS GLOBAIS DE ESTADO ---
-    let fullData = []; // Guarda todos os dados do CSV
-    let filteredData = []; // Guarda os dados após a filtragem
-
-    // --- 3. INICIALIZAÇÃO ---
-    function init() {
-        // Adiciona um 'ouvinte' para o evento de mudança no input do ficheiro
-        fileInput.addEventListener('change', handleFileUpload);
-    }
-
-    // --- 4. FUNÇÕES PRINCIPAIS ---
-    function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            console.log("Nenhum ficheiro selecionado.");
-            return;
-        }
-
-        // Usa a biblioteca PapaParse para processar o ficheiro CSV
+    // Handler para o upload de ficheiro
+    function handleFileUpload(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
         Papa.parse(file, {
-            header: true, // Trata a primeira linha como cabeçalho (cria objetos chave-valor)
-            dynamicTyping: true, // Converte números e booleanos automaticamente
-            skipEmptyLines: true, // Ignora linhas vazias
-            complete: function(results) {
-                // 'complete' é chamado quando o processamento termina
-                console.log("Ficheiro processado com sucesso!", results.data);
-
-                fullData = results.data; // Guarda os dados na nossa variável global
-
-                // Feedback visual para o utilizador
-                alert(`Ficheiro "${file.name}" carregado com ${fullData.length} registos.`);
-                
-                // Esconde a mensagem inicial e mostra o dashboard
-                initialMessage.classList.add('hidden');
-                dashboardContent.classList.remove('hidden');
-
-                // Aqui, no futuro, chamaremos a função para popular o dashboard
-                // Por agora, o nosso teste termina aqui.
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true,
+            complete(results) {
+                DataModule.setData(results.data);
+                applyInitialState();
             },
-            error: function(error) {
-                console.error("Erro ao processar o ficheiro:", error);
-                alert("Ocorreu um erro ao ler o ficheiro CSV.");
+            error(err) {
+                console.error(err);
+                alert('Erro ao ler CSV: ' + err.message);
             }
         });
     }
 
-    // --- 5. EXECUÇÃO INICIAL ---
-    init();
+    // Handler para carregar os dados de exemplo
+    function loadExampleData() {
+        fetch('example-data.csv').then(r => r.text()).then(txt => {
+            const results = Papa.parse(txt, {
+                header: true,
+                skipEmptyLines: true,
+                dynamicTyping: true
+            });
+            DataModule.setData(results.data);
+            applyInitialState();
+        }).catch(err => {
+            console.error(err);
+            alert('Erro ao carregar exemplo: ' + err.message)
+        });
+    }
 
+    // Prepara o estado inicial da aplicação após os dados serem carregados
+    function applyInitialState() {
+        const all = DataModule.getAll();
+        const companies = Array.from(new Set(all.map(d => d.company).filter(Boolean))).sort();
+        UIModule.populateCompanySelect(companies);
+        handleFilterChange();
+    }
+
+    // Handler para qualquer mudança nos filtros
+    function handleFilterChange() {
+        const filters = UIModule.getFilters();
+        const all = DataModule.getAll();
+        
+        let candidates = filters.text ? DataModule.searchText(filters.text) : all;
+        
+        filteredData = candidates.filter(tx => {
+            if (filters.company && filters.company !== 'all' && tx.company !== filters.company) return false;
+            if (filters.from && tx.date < filters.from) return false;
+            if (filters.to && tx.date > filters.to) return false;
+            return true;
+        });
+        renderAll();
+    }
+
+    // Renderiza todos os componentes da UI com os dados filtrados
+    function renderAll() {
+        const dre = DreModule.calculateDRE(filteredData);
+        UIModule.renderCards(dre);
+        UIModule.renderTable(filteredData);
+        UIModule.renderCount(filteredData.length, DataModule.getAll().length);
+        UIModule.renderChart(filteredData);
+    }
+
+    // Handler para simular cobrança via webhook
+    async function handleSendSim(transactionData) {
+        if (!transactionData) {
+            alert("Clique no botão 'Simular Cobrança' numa linha da tabela com status 'previsto'.");
+            return;
+        }
+        try {
+            const resp = await ApiModule.sendChargeSimulation(transactionData);
+            alert('Simulação enviada. Resposta do webhook: ' + JSON.stringify(resp));
+        } catch (err) {
+            console.error(err);
+            alert('Erro ao enviar simulação: ' + err.message);
+        }
+    }
+
+    // --- FUNÇÃO handleGetAi CORRIGIDA ---
+    async function handleGetAi() {
+        const outputEl = document.getElementById('aiOutput');
+        outputEl.innerHTML = '<p>A pedir insights à IA...</p>';
+        
+        try {
+            const dreResults = DreModule.calculateDRE(filteredData);
+            const resp = await ApiModule.getAIInsights({
+                dre: dreResults,
+                transaction_count: filteredData.length
+            });
+            
+            // CORREÇÃO: Verifica se a resposta é um array e pega no texto do primeiro elemento.
+            let aiText = '';
+            if (Array.isArray(resp) && resp.length > 0 && resp[0].output) {
+                aiText = resp[0].output;
+            } else if (resp && resp.output) { // Mantém a verificação antiga por segurança
+                aiText = resp.output;
+            }
+
+            if (aiText) {
+                // Divide o texto em duas partes: o resumo e o insight acionável
+                const parts = aiText.split('**Insight:**');
+                const summary = parts[0].trim().replace(/\n/g, '<br>'); // Substitui quebras de linha por <br>
+                const insight = parts[1] ? parts[1].trim().replace(/\n/g, '<br>') : '';
+
+                let formattedHtml = `<p>${summary}</p>`;
+                if (insight) {
+                    formattedHtml += `<div class="insight-highlight"><strong>Insight Acionável:</strong><p>${insight}</p></div>`;
+                }
+                
+                outputEl.innerHTML = formattedHtml;
+            } else {
+                // Se a resposta ainda assim for inesperada, mostra o JSON original
+                outputEl.innerText = 'Resposta recebida, mas em formato inesperado:\n' + JSON.stringify(resp, null, 2);
+            }
+
+        } catch (err) {
+            outputEl.innerHTML = `<p class="error-message">Erro ao comunicar com o webhook de IA: ${err.message}</p>`;
+            console.error(err);
+        }
+    }
 });

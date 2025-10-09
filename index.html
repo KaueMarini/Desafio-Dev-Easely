@@ -2,185 +2,97 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Desafio Easely — Frontend</title>
+    <title>Desafio Easely — Dashboard Financeiro</title>
     <link rel="stylesheet" href="css/style.css" />
-    </head>
-    <body>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
     <header class="topbar">
-        <h1>Desafio Easely</h1>
-        <p class="subtitle">Dashboard financeiro (HTML / CSS / JS)</p>
+        <h1>Dashboard Financeiro</h1>
+        <p class="subtitle">Desafio Técnico Easely</p>
     </header>
 
     <main class="container">
         <section class="controls">
             <div class="file-upload">
-                <label class="btn">
-                    Carregar CSV
-                    <input id="fileInput" type="file" accept=".csv" />
-                </label>
-                <button id="loadExampleBtn" class="btn secondary">Usar dados de exemplo</button>
+                <label for="fileInput" class="btn">Carregar CSV</label>
+                <input id="fileInput" type="file" accept=".csv, .txt" />
+                <button id="loadExampleBtn" class="btn secondary">Usar Dados de Exemplo</button>
             </div>
             <div class="filters">
                 <div class="filter-item">
-                    <label>Empresa</label>
+                    <label for="companySelect">Empresa</label>
                     <select id="companySelect">
                         <option value="all">Todas</option>
                     </select>
-    </div>
-
-    <div class="filter-item">
-                    <label>De</label>
+                </div>
+                <div class="filter-item">
+                    <label for="dateFrom">De</label>
                     <input id="dateFrom" type="date" />
                 </div>
                 <div class="filter-item">
-                    <label>Até</label>
+                    <label for="dateTo">Até</label>
                     <input id="dateTo" type="date" />
+                </div>
+                <div class="filter-item">
+                    <label for="textSearch">Busca Rápida</label>
+                    <input id="textSearch" type="search" placeholder="Descrição, categoria, empresa..." />
                 </div>
             </div>
         </section>
+
         <section class="cards" id="cards">
-            <div class="card">
-                <small>Receita Bruta</small>
-                <div id="card-receita" class="card-value">R$ 0,00</div>
-            </div>
-            <div class="card">
-                <small>Custos / Despesas</small>
-                <div id="card-despesas" class="card-value">R$ 0,00</div>
-            </div>
-            <div class="card">
-                <small>Resultado</small>
-                <div id="card-resultado" class="card-value">R$ 0,00</div>
-            </div>
-            <div class="card">
-                <small>EBITDA</small>
-                <div id="card-ebitda" class="card-value">R$ 0,00</div>
-            </div>
-        </section>
-                        <div class="filter-item">
-                            <label>Busca</label>
-                            <input id="textSearch" type="search" placeholder="Pesquisar descrição, categoria, empresa..." />
-                        </div>
+            </section>
+        
         <section class="visuals">
             <div class="chart-wrap">
-                <canvas id="dreChart" aria-label="Gráfico de Receitas e Despesas"></canvas>
-    </div>
-
-    <div class="table-wrap">
+                <canvas id="dreChart"></canvas>
+            </div>
+            <div class="table-wrap">
+                <div id="txCount"></div>
                 <table id="txTable">
                     <thead>
                         <tr>
-              <th>Data</th>
-              <th>Empresa</th>
-              <th>Categoria</th>
-              <th>Tipo</th>
-              <th>Valor</th>
-              <th>Descrição</th>
+                            <th>Data</th>
+                            <th>Empresa</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
         </section>
+
         <section class="backend-sim">
-            <h2>Simulações / IA (apenas frontend por agora)</h2>
-            <div class="sim-row">
-    <input id="webhookUrl" type="text" placeholder="URL webhook n8n (opcional)" />
-    <button id="sendSimBtn" class="btn">Simular cobrança (POST)</button>
-    <button id="getAiBtn" class="btn secondary">Pedir insights IA</button>
+            <h2>Simulações e Bónus</h2>
+            <div class="filters">
+                <div class="filter-item">
+                     <label for="webhookUrl">URL do Webhook N8N (Opcional)</label>
+                     <input id="webhookUrl" type="text" placeholder="Cole a URL do seu webhook aqui" />
+                </div>
+                <button id="sendSimBtn" class="btn secondary">Simular Cobrança (via Webhook)</button>
+                <button id="getAiBtn" class="btn">Pedir Insights com IA ✨</button>
             </div>
-            <pre id="aiOutput" class="ai-output" aria-live="polite"></pre>
+            <pre id="aiOutput" class="ai-output" aria-live="polite">Os insights da IA aparecerão aqui...</pre>
         </section>
     </main>
 
     <footer class="footer">
-        <small>Implementação frontend: HTML · CSS · JS — PapaParse · Chart.js</small>
+        <small>Desenvolvido para o desafio técnico da Easely.</small>
     </footer>
 
-        <!-- Bibliotecas via CDN (podem ser substituídas por ficheiros locais se preferir) -->
-        <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-        <!-- Módulos de aplicação (carregados em ordem, sem bundler) -->
-        <script src="js/modules/data.js"></script>
-        <script src="js/modules/dre.js"></script>
-        <script src="js/modules/ui.js"></script>
-        <script src="js/modules/api.js"></script>
-        <script src="js/main.js"></script>
-    </body>
-    </html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easely - Desafio Técnico</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <header>
-        <h1>Dashboard Financeiro - Easely</h1>
-        <p>Transformando números em decisões inteligentes.</p>
-    </header>
-
-    <main>
-        <section id="controls">
-            <h2>Controlos</h2>
-            <div class="control-group">
-                <label for="file-input">Carregar Ficheiro CSV:</label>
-                <input type="file" id="file-input" accept=".csv, .txt">
-            </div>
-            <div class="control-group">
-                <label for="company-select">Empresa:</label>
-                <select id="company-select" disabled>
-                    <option value="all">Todas as Empresas</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="start-date">Data de Início:</label>
-                <input type="date" id="start-date" disabled>
-            </div>
-            <div class="control-group">
-                <label for="end-date">Data de Fim:</label>
-                <input type="date" id="end-date" disabled>
-            </div>
-        </section>
-
-        <section id="dashboard">
-            <div id="initial-message">
-                <p>Carregue um ficheiro CSV para começar a análise.</p>
-            </div>
-
-            <div id="dashboard-content" class="hidden">
-                <div id="cards-container"></div>
-
-                <div id="chart-container">
-                    <canvas id="dre-chart"></canvas>
-                </div>
-
-                <div id="table-container">
-                    <h3>Transações do Período</h3>
-                    <div id="table-wrapper"></div>
-                </div>
-                
-                <div id="insights-container">
-                    <h3>Insights com IA ✨</h3>
-                    <button id="ai-insights-button" disabled>Gerar Insights</button>
-                    <div id="insights-result"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>Desenvolvido para o desafio técnico da Easely.</p>
-    </footer>
-
-    <script src="js/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <script src="js/modules/data.js"></script>
+    <script src="js/modules/dre.js"></script>
+    <script src="js/modules/ui.js"></script>
+    <script src="js/modules/api.js"></script>
     <script src="js/main.js"></script>
-
 </body>
 </html>
