@@ -11,7 +11,7 @@ const UIModule = (function() {
         document.getElementById('textSearch').addEventListener('input', handlers.onFilterChange);
         document.getElementById('getAiBtn').addEventListener('click', handlers.onGetAi);
         document.getElementById('exportCsvBtn').addEventListener('click', handlers.onExportCSV);
-
+        document.getElementById('sendDreEmailBtn').addEventListener('click', handlers.onSendDreEmail);
         // Listener reativado para cliques nos botões da tabela
         document.querySelector('#txTable tbody').addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('simulate-btn')) {

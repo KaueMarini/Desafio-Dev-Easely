@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         onFilterChange: handleFilterChange,
         onGetAi: handleGetAi,
         onExportCSV: () => UIModule.exportToCSV(currentDre),
-        onSendSim: handleSendSim // Lógica de disparo reativada
+        onSendSim: handleSendSim,// Lógica de disparo reativada
+        onSendDreEmail: handleSendDreEmail
     };
 
     // Inicializa os 'ouvintes' de eventos na UI
@@ -121,6 +122,27 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             outputEl.innerHTML = `<p class="error-message">Erro ao comunicar com o webhook de IA: ${err.message}</p>`;
             console.error(err);
+        }
+    }
+     async function handleSendDreEmail() {
+        const filters = UIModule.getFilters();
+        // Prepara o payload com os dados do DRE e os filtros aplicados
+        const payload = {
+            dre: currentDre,
+            filters: {
+                company: filters.company,
+                from: filters.from ? filters.from.toISOString().slice(0, 10) : 'N/A',
+                to: filters.to ? filters.to.toISOString().slice(0, 10) : 'N/A'
+            }
+        };
+
+        try {
+            alert('A enviar relatório DRE para o webhook...');
+            const resp = await ApiModule.sendDreEmail(payload);
+            alert('Relatório enviado com sucesso! Resposta: ' + JSON.stringify(resp));
+        } catch (err) {
+            console.error(err);
+            alert('Erro ao enviar o relatório DRE: ' + err.message);
         }
     }
 });
