@@ -10,7 +10,8 @@ const UIModule = (function() {
         document.getElementById('dateTo').addEventListener('change', handlers.onFilterChange);
         document.getElementById('textSearch').addEventListener('input', handlers.onFilterChange);
         document.getElementById('getAiBtn').addEventListener('click', () => handlers.onGetAi());
-
+        document.getElementById('exportCsvBtn').addEventListener('click', handlers.onExportCSV);
+        document.getElementById('exportPdfBtn').addEventListener('click', handlers.onExportPDF);
         document.querySelector('.container').addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('simulate-btn')) {
                 const transactionData = JSON.parse(event.target.dataset.transaction);
@@ -135,6 +136,41 @@ const UIModule = (function() {
     function formatBRL(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0); }
     function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('pt-BR', { timeZone: 'UTC' }); }
     function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+    function exportToCSV(dreData) {
+    const dreArray = Object.entries(dreData).map(([key, value]) => ({
+        Metrica: key,
+        Valor: formatBRL(value)
+}));
 
-    return { initListeners, getFilters, populateCompanySelect, renderCards, renderTable, renderChart, renderCount, getWebhookUrl };
+        const csv = Papa.unparse(dreArray);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "dre.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function exportToPDF(dreData) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Demonstrativo de Resultados (DRE)", 14, 22);
+        
+        const tableColumn = ["Métrica", "Valor"];
+        const tableRows = [];
+
+        for (const key in dreData) {
+            const dreRow = [key, formatBRL(dreData[key])];
+            tableRows.push(dreRow);
+        }
+
+        doc.autoTable(tableColumn, tableRows, { startY: 30 });
+        doc.save('dre.pdf');
+    }
+    return { initListeners, getFilters, populateCompanySelect, renderCards, renderTable, renderChart, renderCount, getWebhookUrl,exportToCSV, exportToPDF };
 })();

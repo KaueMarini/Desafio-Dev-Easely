@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Estado da aplicação
     let filteredData = [];
+    let currentDre = {}; // Variável para guardar o DRE atual para exportação
 
     // Mapeamento dos handlers dos eventos para o módulo de UI
     const eventHandlers = {
@@ -9,7 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
         onLoadExample: loadExampleData,
         onFilterChange: handleFilterChange,
         onSendSim: handleSendSim,
-        onGetAi: handleGetAi
+        onGetAi: handleGetAi,
+        // Handlers para as novas funções de exportação
+        onExportCSV: () => UIModule.exportToCSV(currentDre),
+        onExportPDF: () => UIModule.exportToPDF(currentDre)
     };
 
     // Inicializa os 'ouvintes' de eventos na UI
@@ -76,8 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Renderiza todos os componentes da UI com os dados filtrados
     function renderAll() {
-        const dre = DreModule.calculateDRE(filteredData);
-        UIModule.renderCards(dre);
+        // Calcula o DRE e guarda na variável `currentDre` para ser acessível pelas funções de exportação
+        currentDre = DreModule.calculateDRE(filteredData);
+        UIModule.renderCards(currentDre);
         UIModule.renderTable(filteredData);
         UIModule.renderCount(filteredData.length, DataModule.getAll().length);
         UIModule.renderChart(filteredData);
@@ -98,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- FUNÇÃO handleGetAi CORRIGIDA ---
+    // Handler para obter insights da IA
     async function handleGetAi() {
         const outputEl = document.getElementById('aiOutput');
         outputEl.innerHTML = '<p>A pedir insights à IA...</p>';
@@ -110,18 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 transaction_count: filteredData.length
             });
             
-            // CORREÇÃO: Verifica se a resposta é um array e pega no texto do primeiro elemento.
             let aiText = '';
             if (Array.isArray(resp) && resp.length > 0 && resp[0].output) {
                 aiText = resp[0].output;
-            } else if (resp && resp.output) { // Mantém a verificação antiga por segurança
+            } else if (resp && resp.output) {
                 aiText = resp.output;
             }
 
             if (aiText) {
-                // Divide o texto em duas partes: o resumo e o insight acionável
                 const parts = aiText.split('**Insight:**');
-                const summary = parts[0].trim().replace(/\n/g, '<br>'); // Substitui quebras de linha por <br>
+                const summary = parts[0].trim().replace(/\n/g, '<br>');
                 const insight = parts[1] ? parts[1].trim().replace(/\n/g, '<br>') : '';
 
                 let formattedHtml = `<p>${summary}</p>`;
@@ -131,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 outputEl.innerHTML = formattedHtml;
             } else {
-                // Se a resposta ainda assim for inesperada, mostra o JSON original
                 outputEl.innerText = 'Resposta recebida, mas em formato inesperado:\n' + JSON.stringify(resp, null, 2);
             }
 

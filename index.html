@@ -69,17 +69,20 @@
         </section>
 
         <section class="backend-sim">
-            <h2>Simulações e Bónus</h2>
-            <div class="filters">
-                <div class="filter-item">
-                     <label for="webhookUrl">URL do Webhook N8N (Opcional)</label>
-                     <input id="webhookUrl" type="text" placeholder="Cole a URL do seu webhook aqui" />
-                </div>
-                <button id="sendSimBtn" class="btn secondary">Simular Cobrança (via Webhook)</button>
-                <button id="getAiBtn" class="btn">Pedir Insights com IA ✨</button>
-            </div>
-            <pre id="aiOutput" class="ai-output" aria-live="polite">Os insights da IA aparecerão aqui...</pre>
-        </section>
+        <h2>Simulações e Bónus</h2>
+        <div class="filters">
+        <div class="filter-item">
+             <label for="webhookUrl">URL do Webhook N8N (Opcional)</label>
+             <input id="webhookUrl" type="text" placeholder="Cole a URL do seu webhook aqui" />
+        </div>
+        <button id="sendSimBtn" class="btn secondary">Simular Cobrança (via Webhook)</button>
+        <button id="getAiBtn" class="btn">Pedir Insights com IA ✨</button>
+        
+        <button id="exportCsvBtn" class="btn secondary">Exportar DRE para CSV</button>
+        <button id="exportPdfBtn" class="btn secondary">Exportar DRE para PDF</button>
+        </div>
+    <pre id="aiOutput" class="ai-output" aria-live="polite">Os insights da IA aparecerão aqui...</pre>
+</section>
     </main>
 
     <footer class="footer">
