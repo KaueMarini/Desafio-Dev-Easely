@@ -319,3 +319,29 @@ tbody tr:hover {
     color: #ef4444; /* Vermelho para mensagens de erro */
     font-weight: 500;
 }
+
+.value-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre o ícone e o texto */
+    font-weight: 500;
+}
+
+.value-indicator {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    color: white;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+}
+
+.indicator-revenue {
+    background-color: #16a34a; /* Verde sucesso */
+}
+
+.indicator-expense {
+    background-color: #ef4444; /* Vermelho perigo */
+}

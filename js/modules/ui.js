@@ -11,7 +11,6 @@ const UIModule = (function() {
         document.getElementById('textSearch').addEventListener('input', handlers.onFilterChange);
         document.getElementById('getAiBtn').addEventListener('click', () => handlers.onGetAi());
 
-        // Modificado para delegar o evento ao elemento pai estático
         document.querySelector('.container').addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('simulate-btn')) {
                 const transactionData = JSON.parse(event.target.dataset.transaction);
@@ -56,7 +55,6 @@ const UIModule = (function() {
     function renderTable(data) {
         const tbody = document.querySelector('#txTable tbody');
         tbody.innerHTML = '';
-        // Adicionada uma coluna de Ação para o botão
         document.querySelector('#txTable thead tr').innerHTML = `
             <th>Data</th>
             <th>Cliente</th>
@@ -71,12 +69,21 @@ const UIModule = (function() {
                 tr.classList.add('unpaid-row');
             }
             const transactionJsonString = escapeHtml(JSON.stringify(tx));
+            
+            // --- ALTERAÇÃO PRINCIPAL AQUI ---
+            const isRevenue = tx.type === 'receita';
+            const valueIndicatorClass = isRevenue ? 'indicator-revenue' : 'indicator-expense';
+            const valueIndicatorIcon = isRevenue ? '▲' : '▼';
+
             tr.innerHTML = `
                 <td>${formatDate(tx.date)}</td>
                 <td>${escapeHtml(tx.company)}</td>
                 <td title="${escapeHtml(tx.description)}">${escapeHtml(tx.description || '').slice(0, 40)}</td>
                 <td><span class="status-badge status-${tx.status}">${escapeHtml(tx.status)}</span></td>
-                <td class="${tx.type === 'receita' ? 'value-revenue' : 'value-expense'}">${formatBRL(tx.value)}</td>
+                <td class="value-cell">
+                    <span class="value-indicator ${valueIndicatorClass}">${valueIndicatorIcon}</span>
+                    ${formatBRL(tx.value)}
+                </td>
                 <td>
                     ${tx.status === 'previsto' ? 
                         `<button class="btn-small simulate-btn" data-transaction='${transactionJsonString}'>Simular Cobrança</button>` : 
