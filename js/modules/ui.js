@@ -3,16 +3,17 @@ const UIModule = (function() {
     let dreChart = null;
 
     function initListeners(handlers) {
+        // Listeners para os elementos que ainda existem
         document.getElementById('fileInput').addEventListener('change', handlers.onFileUpload);
-        document.getElementById('loadExampleBtn').addEventListener('click', handlers.onLoadExample);
         document.getElementById('companySelect').addEventListener('change', handlers.onFilterChange);
         document.getElementById('dateFrom').addEventListener('change', handlers.onFilterChange);
         document.getElementById('dateTo').addEventListener('change', handlers.onFilterChange);
         document.getElementById('textSearch').addEventListener('input', handlers.onFilterChange);
-        document.getElementById('getAiBtn').addEventListener('click', () => handlers.onGetAi());
+        document.getElementById('getAiBtn').addEventListener('click', handlers.onGetAi);
         document.getElementById('exportCsvBtn').addEventListener('click', handlers.onExportCSV);
-        document.getElementById('exportPdfBtn').addEventListener('click', handlers.onExportPDF);
-        document.querySelector('.container').addEventListener('click', function(event) {
+
+        // Listener reativado para cliques nos botões da tabela
+        document.querySelector('#txTable tbody').addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('simulate-btn')) {
                 const transactionData = JSON.parse(event.target.dataset.transaction);
                 handlers.onSendSim(transactionData);
@@ -56,6 +57,7 @@ const UIModule = (function() {
     function renderTable(data) {
         const tbody = document.querySelector('#txTable tbody');
         tbody.innerHTML = '';
+        // Adicionando a coluna "Ação" de volta ao cabeçalho
         document.querySelector('#txTable thead tr').innerHTML = `
             <th>Data</th>
             <th>Cliente</th>
@@ -64,14 +66,11 @@ const UIModule = (function() {
             <th>Valor</th>
             <th>Ação</th>
         `;
-        data.slice().sort((a, b) => b.date - a.date).forEach(tx => {
+        data.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(tx => {
             const tr = document.createElement('tr');
-            if (tx.status === 'previsto') {
-                tr.classList.add('unpaid-row');
-            }
+            
             const transactionJsonString = escapeHtml(JSON.stringify(tx));
             
-            // --- ALTERAÇÃO PRINCIPAL AQUI ---
             const isRevenue = tx.type === 'receita';
             const valueIndicatorClass = isRevenue ? 'indicator-revenue' : 'indicator-expense';
             const valueIndicatorIcon = isRevenue ? '▲' : '▼';
@@ -87,7 +86,7 @@ const UIModule = (function() {
                 </td>
                 <td>
                     ${tx.status === 'previsto' ? 
-                        `<button class="btn-small simulate-btn" data-transaction='${transactionJsonString}'>Simular Cobrança</button>` : 
+                        `<button class="btn-small simulate-btn" data-transaction='${transactionJsonString}'>Disparar</button>` : 
                         '-'}
                 </td>
             `;
@@ -100,7 +99,7 @@ const UIModule = (function() {
         if (dreChart) { dreChart.destroy(); }
 
         const dailyData = data.reduce((acc, tx) => {
-            const day = tx.date.toISOString().slice(0, 10);
+            const day = new Date(tx.date).toISOString().slice(0, 10);
             if (!acc[day]) acc[day] = { receita: 0, despesa: 0 };
             const v = Number(tx.value) || 0;
             if (tx.type === 'receita') {
@@ -129,18 +128,11 @@ const UIModule = (function() {
         });
     }
 
-    function getWebhookUrl() {
-        return document.getElementById('webhookUrl').value.trim();
-    }
-
-    function formatBRL(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0); }
-    function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('pt-BR', { timeZone: 'UTC' }); }
-    function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
     function exportToCSV(dreData) {
-    const dreArray = Object.entries(dreData).map(([key, value]) => ({
-        Metrica: key,
-        Valor: formatBRL(value)
-}));
+        const dreArray = Object.entries(dreData).map(([key, value]) => ({
+            Metrica: key,
+            Valor: formatBRL(value)
+        }));
 
         const csv = Papa.unparse(dreArray);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -154,23 +146,18 @@ const UIModule = (function() {
         document.body.removeChild(link);
     }
 
-    function exportToPDF(dreData) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+    function formatBRL(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0); }
+    function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('pt-BR', { timeZone: 'UTC' }); }
+    function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
 
-        doc.setFontSize(18);
-        doc.text("Demonstrativo de Resultados (DRE)", 14, 22);
-        
-        const tableColumn = ["Métrica", "Valor"];
-        const tableRows = [];
-
-        for (const key in dreData) {
-            const dreRow = [key, formatBRL(dreData[key])];
-            tableRows.push(dreRow);
-        }
-
-        doc.autoTable(tableColumn, tableRows, { startY: 30 });
-        doc.save('dre.pdf');
-    }
-    return { initListeners, getFilters, populateCompanySelect, renderCards, renderTable, renderChart, renderCount, getWebhookUrl,exportToCSV, exportToPDF };
+    return { 
+        initListeners, 
+        getFilters, 
+        populateCompanySelect, 
+        renderCards, 
+        renderTable, 
+        renderChart, 
+        renderCount,
+        exportToCSV
+    };
 })();

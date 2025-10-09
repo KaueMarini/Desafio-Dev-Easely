@@ -7,13 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mapeamento dos handlers dos eventos para o módulo de UI
     const eventHandlers = {
         onFileUpload: handleFileUpload,
-        onLoadExample: loadExampleData,
         onFilterChange: handleFilterChange,
-        onSendSim: handleSendSim,
         onGetAi: handleGetAi,
-        // Handlers para as novas funções de exportação
         onExportCSV: () => UIModule.exportToCSV(currentDre),
-        onExportPDF: () => UIModule.exportToPDF(currentDre)
+        onSendSim: handleSendSim // Lógica de disparo reativada
     };
 
     // Inicializa os 'ouvintes' de eventos na UI
@@ -38,22 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handler para carregar os dados de exemplo
-    function loadExampleData() {
-        fetch('example-data.csv').then(r => r.text()).then(txt => {
-            const results = Papa.parse(txt, {
-                header: true,
-                skipEmptyLines: true,
-                dynamicTyping: true
-            });
-            DataModule.setData(results.data);
-            applyInitialState();
-        }).catch(err => {
-            console.error(err);
-            alert('Erro ao carregar exemplo: ' + err.message)
-        });
-    }
-
     // Prepara o estado inicial da aplicação após os dados serem carregados
     function applyInitialState() {
         const all = DataModule.getAll();
@@ -71,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         filteredData = candidates.filter(tx => {
             if (filters.company && filters.company !== 'all' && tx.company !== filters.company) return false;
-            if (filters.from && tx.date < filters.from) return false;
-            if (filters.to && tx.date > filters.to) return false;
+            if (filters.from && new Date(tx.date) < new Date(filters.from)) return false;
+            if (filters.to && new Date(tx.date) > new Date(filters.to)) return false;
             return true;
         });
         renderAll();
@@ -80,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Renderiza todos os componentes da UI com os dados filtrados
     function renderAll() {
-        // Calcula o DRE e guarda na variável `currentDre` para ser acessível pelas funções de exportação
         currentDre = DreModule.calculateDRE(filteredData);
         UIModule.renderCards(currentDre);
         UIModule.renderTable(filteredData);
@@ -88,18 +68,19 @@ document.addEventListener('DOMContentLoaded', () => {
         UIModule.renderChart(filteredData);
     }
 
-    // Handler para simular cobrança via webhook
+    // --- FUNÇÃO PARA O WEBHOOK REATIVADA ---
     async function handleSendSim(transactionData) {
         if (!transactionData) {
-            alert("Clique no botão 'Simular Cobrança' numa linha da tabela com status 'previsto'.");
+            alert("Clique no botão 'Disparar' numa linha da tabela com status 'previsto'.");
             return;
         }
         try {
+            console.log('Enviando para o webhook:', transactionData);
             const resp = await ApiModule.sendChargeSimulation(transactionData);
-            alert('Simulação enviada. Resposta do webhook: ' + JSON.stringify(resp));
+            alert('Disparo enviado para o webhook. Resposta: ' + JSON.stringify(resp));
         } catch (err) {
             console.error(err);
-            alert('Erro ao enviar simulação: ' + err.message);
+            alert('Erro ao enviar para o webhook: ' + err.message);
         }
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Desafio Easely — Dashboard Financeiro</title>
+    <title>Desafio Easely</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,6 @@
 <body>
     <header class="topbar">
         <h1>Dashboard Financeiro</h1>
-        <p class="subtitle">Desafio Técnico Easely</p>
     </header>
 
     <main class="container">
@@ -20,7 +19,6 @@
             <div class="file-upload">
                 <label for="fileInput" class="btn">Carregar CSV</label>
                 <input id="fileInput" type="file" accept=".csv, .txt" />
-                <button id="loadExampleBtn" class="btn secondary">Usar Dados de Exemplo</button>
             </div>
             <div class="filters">
                 <div class="filter-item">
@@ -45,7 +43,7 @@
         </section>
 
         <section class="cards" id="cards">
-            </section>
+        </section>
         
         <section class="visuals">
             <div class="chart-wrap">
@@ -69,20 +67,13 @@
         </section>
 
         <section class="backend-sim">
-        <h2>Simulações e Bónus</h2>
-        <div class="filters">
-        <div class="filter-item">
-             <label for="webhookUrl">URL do Webhook N8N (Opcional)</label>
-             <input id="webhookUrl" type="text" placeholder="Cole a URL do seu webhook aqui" />
-        </div>
-        <button id="sendSimBtn" class="btn secondary">Simular Cobrança (via Webhook)</button>
-        <button id="getAiBtn" class="btn">Pedir Insights com IA ✨</button>
-        
-        <button id="exportCsvBtn" class="btn secondary">Exportar DRE para CSV</button>
-        <button id="exportPdfBtn" class="btn secondary">Exportar DRE para PDF</button>
-        </div>
-    <pre id="aiOutput" class="ai-output" aria-live="polite">Os insights da IA aparecerão aqui...</pre>
-</section>
+            <h2>Bónus</h2>
+            <div class="filters">
+                <button id="getAiBtn" class="btn">Pedir Insights com IA </button>
+                <button id="exportCsvBtn" class="btn secondary">Exportar DRE para CSV</button>
+            </div>
+            <pre id="aiOutput" class="ai-output" aria-live="polite">Os insights da IA aparecerão aqui...</pre>
+        </section>
     </main>
 
     <footer class="footer">
