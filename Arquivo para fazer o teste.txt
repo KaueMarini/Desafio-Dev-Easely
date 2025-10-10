@@ -1,0 +1,36 @@
+data,tipo,categoria,descricao,valor,cliente,status,meio_pagamento,origem
+2025-09-20,receita,Delivery,Repasse iFood,2450.90,Pizza Prime Perdizes,pago,Pix,iFood
+2025-09-21,despesa,Fornecedor,Compra de insumos hortifruti,980.40,Pizza Prime Perdizes,pago,Boleto,Atacadista
+2025-09-21,despesa,Taxas,Taxa maquininha VR,78.20,Pizza Prime Perdizes,pago,Automático,Maquininha
+2025-09-22,receita,Cartão,Vendas cartão crédito,3120.00,Pizza Prime Perdizes,pago,Cartão,Maquininha
+2025-09-22,despesa,Comissões,Comissão iFood,122.50,Pizza Prime Perdizes,pago,Automático,iFood
+2025-09-22,despesa,Embalagens,Compra embalagens delivery,210.00,Pizza Prime Perdizes,pago,Pix,Fornecedor
+2025-09-23,despesa,Folha,Adiantamento de salários,1500.00,Pizza Prime Perdizes,previsto,Transferência,Financeiro
+2025-09-23,despesa,Impostos,ISS Setembro,300.00,Pizza Prime Perdizes,previsto,Boleto,Prefeitura
+2025-09-24,receita,Cartão,Vendas débito,890.00,Pizza Prime Perdizes,pago,Cartão,Maquininha
+2025-09-24,despesa,Utilidades,Conta de energia,520.30,Pizza Prime Perdizes,pago,Boleto,Concessionária
+2025-09-25,despesa,Aluguel,Aluguel setembro,4000.00,Pizza Prime Perdizes,pago,Transferência,Locador
+2025-09-25,despesa,Sistemas,Mensalidade F360,350.00,Pizza Prime Perdizes,pago,Pix,Sistema
+2025-09-26,receita,Delivery,Repasse iFood,1875.50,Pizza Prime Perdizes,pago,Pix,iFood
+2025-09-26,despesa,Taxas,Taxa maquininha crédito,95.60,Pizza Prime Perdizes,pago,Automático,Maquininha
+2025-09-27,despesa,Marketing,Impulsionamento Instagram,220.00,Pizza Prime Perdizes,pago,Cartão,Marketing
+2025-09-28,despesa,Fornecedor,Compra de carnes,1650.00,Pizza Prime Perdizes,pago,Boleto,Frigorífico
+2025-09-28,receita,Cartão,Vendas cartão crédito,2750.00,Pizza Prime Perdizes,pago,Cartão,Maquininha
+2025-09-29,despesa,Impostos,DAS Simples Nacional,980.00,Pizza Prime Perdizes,pago,Boleto,Receita Federal
+2025-09-30,receita,Outras,Vendas balcão dinheiro,430.00,Pizza Prime Perdizes,pago,Dinheiro,Loja
+2025-09-30,despesa,Despesas Gerais,Material de limpeza,140.00,Pizza Prime Perdizes,pago,Pix,Fornecedor
+2025-09-22,receita,Cartão,Vendas cartão crédito,1980.00,Bar do Alemão,pago,Cartão,Maquininha
+2025-09-23,despesa,Fornecedor,Compra de bebidas,760.00,Bar do Alemão,pago,Boleto,Distribuidora
+2025-09-24,despesa,Taxas,Taxa maquininha,68.90,Bar do Alemão,pago,Automático,Maquininha
+2025-09-25,receita,Delivery,Repasse iFood,980.40,Bar do Alemão,pago,Pix,iFood
+2025-09-26,despesa,Utilidades,Conta de água,210.00,Bar do Alemão,pago,Boleto,Concessionária
+2025-09-27,despesa,Folha,Salários,4200.00,Bar do Alemão,previsto,Transferência,Financeiro
+2025-09-28,receita,Outras,Vendas balcão dinheiro,320.00,Bar do Alemão,pago,Dinheiro,Loja
+2025-09-22,receita,Cartão,Vendas cartão crédito,1540.00,Al Capizza,pago,Cartão,Maquininha
+2025-09-23,despesa,Fornecedor,Compra de queijos,680.00,Al Capizza,pago,Boleto,Laticínios
+2025-09-24,despesa,Comissões,Comissão app próprio,55.00,Al Capizza,pago,Automático,App Próprio
+2025-09-25,despesa,Embalagens,Compra de caixas pizza,180.00,Al Capizza,pago,Pix,Fornecedor
+2025-09-26,despesa,Sistemas,SaaS atendimento,199.90,Al Capizza,pago,Cartão,SaaS
+2025-09-27,despesa,Impostos,ISS Setembro,240.00,Al Capizza,previsto,Boleto,Prefeitura
+2025-09-28,receita,Delivery,Repasse iFood,1250.00,Al Capizza,pago,Pix,iFood
+2025-09-28,receita,Delivery,Repasse iFood,1250.00,Teste,pago,Pix,iFood
