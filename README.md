@@ -6,7 +6,7 @@ Este projeto é a minha abordagem para o desafio técnico da Easely. Mais do que
 
 [➡️ Aceda à Demo Ao Vivo Aqui ⬅️](https://URL_DA_SUA_DEMO_NA_NETLIFY)
 
-![Screenshot do Dashboard](./assets/image_26223e.png)
+![Screenshot do Dashboard](./assets/image_26223e.PNG)
 
 
 
