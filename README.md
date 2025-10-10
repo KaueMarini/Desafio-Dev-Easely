@@ -14,13 +14,13 @@ Este projeto é a minha abordagem para o desafio técnico da Easely. Mais do que
 
 ## 💡 A Filosofia por Trás do Projeto: Entregar Valor, Rápido.
 
-A minha abordagem para este desafio foi guiada por uma filosofia de desenvolvimento que acredito ser crucial para startups como a Easely: **tempo é o recurso mais valioso**. O papel de um desenvolvedor Pleno não é apenas escrever código, mas sim ser um arquiteto de soluções que encontra o caminho mais rápido para entregar valor ao negócio.
+A minha abordagem para este desafio foi guiada por uma filosofia de desenvolvimento que acredito ser crucial para startups como a Easely: **tempo é o recurso mais valioso**.
 
 Por isso, a solução foi dividida em duas frentes estratégicas:
 
-1.  **O Core da Aplicação (Frontend):** Onde a experiência do utilizador e a performance são críticas, construí uma base robusta com **JavaScript puro e modular**. O controlo total sobre o código aqui foi essencial para garantir uma interface reativa e manutenível.
+1.  **O Core da Aplicação (Frontend):** Construí uma base robusta com **JavaScript puro e modular**. O controle total sobre o código aqui foi essencial para garantir uma interface reativa e de facil manutenção.
 
-2.  **O Cérebro da Automação (Backend):** Para funcionalidades como envio de emails, logging e geração de insights com IA, em vez de construir um backend do zero (o que levaria dias), optei por uma abordagem pragmática: utilizei o **n8n**. Esta decisão permitiu-me implementar um "backend" completo em horas, demonstrando a capacidade de integrar APIs e resolver problemas complexos de forma extremamente eficiente.
+2.  **O Cérebro da Automação (Backend):** Para funcionalidades como envio de emails, logging e geração de insights com IA, em vez de construir um backend do zero (o que levaria dias), optei por uma abordagem diferente, utilizei o **n8n**. Esta decisão permitiu-me implementar um "backend" completo em horas, demonstrando a capacidade de integrar APIs e resolver problemas complexos de forma extremamente eficiente.
 
 O resultado é uma aplicação que não só cumpre todos os requisitos, mas que foi construída numa fração do tempo tradicional, permitindo que o foco permaneça no que realmente importa: a solução para o cliente.
 
@@ -32,16 +32,16 @@ O resultado é uma aplicação que não só cumpre todos os requisitos, mas que 
 -   **Upload e Parsing de CSV:** Leitura e processamento de arquivos `.csv` no lado do cliente com PapaParse.
 -   **Filtros Dinâmicos:** Filtragem em tempo real por empresa, período de datas e busca textual.
 -   **Cálculo de DRE:** Lógica de negócio explícita para o cálculo do Demonstrativo de Resultados.
--   **✨ Insights com IA:** Integração com o Google Gemini via n8n para gerar análises financeiras automáticas.
--   **⚡ Automação de Email:** Disparo de lembretes de cobrança e envio de relatórios DRE por email.
--   **📝 Logging Automático:** Registo de cada cobrança enviada numa planilha do Google Sheets para fins de auditoria.
+-   **Insights com IA:** Integração com o Google Gemini via n8n para gerar análises financeiras automáticas.
+-   **Automação de Email:** Disparo de lembretes de cobrança e envio de relatórios DRE por email.
+-   **Logging Automático:** Registo de cada cobrança enviada numa planilha do Google Sheets para fins de auditoria.
 -   **UX Refinada:** Feedback de loading nos botões e sistema de notificações não intrusivo.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
--   **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js, PapaParse.
+-   **Frontend:** HTML, CSS, JavaScript, Chart.js, PapaParse.
 -   **Backend & Automação:** n8n.
 -   **Serviços Integrados:** Gmail API, Google Sheets API, Google Gemini.
 -   **Hospedagem:** Netlify.
