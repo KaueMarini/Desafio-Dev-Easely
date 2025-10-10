@@ -1,118 +1,145 @@
-# Dashboard Financeiro - Desafio Técnico Easely
+# Dashboard Financeiro Inteligente - Desafio Técnico Easely
 
-Este projeto é uma Single-Page Application (SPA) construída com JavaScript puro para o desafio técnico da Easely. A aplicação permite o upload de um arquivo CSV de movimentos financeiros, exibe um dashboard interativo com um DRE (Demonstrativo de Resultados do Exercício) simplificado, e integra funcionalidades bônus utilizando n8n como backend de automação.
+### Uma SPA de análise financeira com backend de automação pragmático utilizando n8n.
 
-![Screenshot do Dashboard](dashboard.png)
+Este projeto é a minha abordagem para o desafio técnico da Easely. Mais do que apenas um dashboard, é uma demonstração de como o desenvolvimento moderno pode ser acelerado para entregar valor de negócio rapidamente, combinando uma base de código sólida com ferramentas de automação inteligentes.
 
----
+[➡️ Aceda à Demo Ao Vivo Aqui ⬅️](https://easely.netlify.app/)
 
-## 🚀 Funcionalidades Implementadas
+![Screenshot do Dashboard](./assets/image_26223e.PNG)
 
--   **Dashboard Interativo:** Cards com métricas principais, gráfico de Receitas vs. Despesas e tabela de transações.
--   **Upload e Parsing de CSV:** Utiliza a biblioteca PapaParse para ler e processar os dados do arquivo.
--   **Filtros Dinâmicos:** Filtre as transações por empresa, período de datas ou por busca textual em tempo real.
--   **Cálculo de DRE:** Lógica de negócio clara para calcular um DRE simplificado com base nos dados filtrados.
--   **Insights com IA:** Integração com um workflow no n8n que utiliza o Google Gemini para gerar análises e insights acionáveis sobre os dados.
--   **Automação de Email:** Funcionalidades para disparar lembretes de cobrança e enviar o relatório DRE por email, automatizadas via webhooks no n8n.
--   **Exportação para CSV:** Exporte o DRE calculado para um arquivo `.csv`.
--   **Logging de Ações:** Registra o disparo de cobranças em uma planilha do Google Sheets para auditoria.
--   **UI/UX Refinada:** Interface limpa com feedback de loading e notificações não intrusivas para uma melhor experiência do utilizador.
+
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## 💡 A Filosofia por Trás do Projeto: Entregar Valor, Rápido.
 
-A forma mais simples de rodar este projeto é utilizando a extensão **Live Server** no Visual Studio Code, que cria um servidor local e evita potenciais problemas de CORS do navegador.
+A minha abordagem para este desafio foi guiada por uma filosofia de desenvolvimento que acredito ser crucial para startups como a Easely: **tempo é o recurso mais valioso**. O papel de um desenvolvedor Pleno não é apenas escrever código, mas sim ser um arquiteto de soluções que encontra o caminho mais rápido para entregar valor ao negócio.
+
+Por isso, a solução foi dividida em duas frentes estratégicas:
+
+1.  **O Core da Aplicação (Frontend):** Onde a experiência do utilizador e a performance são críticas, construí uma base robusta com **JavaScript puro e modular**. O controlo total sobre o código aqui foi essencial para garantir uma interface reativa e manutenível.
+
+2.  **O Cérebro da Automação (Backend):** Para funcionalidades como envio de emails, logging e geração de insights com IA, em vez de construir um backend do zero (o que levaria dias), optei por uma abordagem pragmática: utilizei o **n8n**. Esta decisão permitiu-me implementar um "backend" completo em horas, demonstrando a capacidade de integrar APIs e resolver problemas complexos de forma extremamente eficiente.
+
+O resultado é uma aplicação que não só cumpre todos os requisitos, mas que foi construída numa fração do tempo tradicional, permitindo que o foco permaneça no que realmente importa: a solução para o cliente.
+
+---
+
+## 🚀 Funcionalidades
+
+-   **Dashboard Interativo:** Interface limpa com cards de métricas, gráfico de Receitas vs. Despesas e tabela de transações.
+-   **Upload e Parsing de CSV:** Leitura e processamento de arquivos `.csv` no lado do cliente com PapaParse.
+-   **Filtros Dinâmicos:** Filtragem em tempo real por empresa, período de datas e busca textual.
+-   **Cálculo de DRE:** Lógica de negócio explícita para o cálculo do Demonstrativo de Resultados.
+-   **✨ Insights com IA:** Integração com o Google Gemini via n8n para gerar análises financeiras automáticas.
+-   **⚡ Automação de Email:** Disparo de lembretes de cobrança e envio de relatórios DRE por email.
+-   **📝 Logging Automático:** Registo de cada cobrança enviada numa planilha do Google Sheets para fins de auditoria.
+-   **UX Refinada:** Feedback de loading nos botões e sistema de notificações não intrusivo.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+-   **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js, PapaParse.
+-   **Backend & Automação:** n8n.
+-   **Serviços Integrados:** Gmail API, Google Sheets API, Google Gemini.
+-   **Hospedagem:** Netlify.
+
+---
+
+## ⚙️ Como Rodar o Projeto
+
+A forma mais simples de rodar este projeto é utilizando a extensão **Live Server** no Visual Studio Code.
 
 1.  **Clone o repositório:**
     ```bash
     git clone [URL_DO_SEU_REPOSITORIO]
     ```
-2.  **Abra no VS Code:**
-    -   Abra a pasta do projeto no Visual Studio Code.
-
-3.  **Instale o Live Server (se necessário):**
-    -   Vá para a aba de Extensões (Ctrl+Shift+X).
-    -   Procure por `Live Server` (de Ritwick Dey) e clique em "Instalar".
-
-4.  **Inicie o projeto:**
-    -   Clique com o botão direito no arquivo `index.html`.
-    -   Selecione a opção **"Open with Live Server"**.
-
-    ![Open with Live Server](https://i.imgur.com/L7E7H2o.png)
-
-    -   Alternativamente, clique no botão **"Go Live"** na barra de status no canto inferior direito do VS Code.
+2.  **Abra no VS Code** e clique com o botão direito no arquivo `index.html`.
+3.  Selecione a opção **"Open with Live Server"**.
 
 O projeto será aberto automaticamente no seu navegador padrão, pronto para ser utilizado.
 
 ---
 
-## 📊 Como o DRE é Calculado (Regras e Categorias)
+## 🏛️ Arquitetura e Decisões de Design
 
-A lógica de cálculo do DRE está centralizada no módulo `js/modules/dre.js`. A classificação das despesas é feita de forma explícita, com base em palavras-chave presentes na coluna `categoria` do CSV.
+A aplicação foi estruturada com base no **Princípio da Responsabilidade Única**, onde cada módulo tem uma função clara e específica:
 
--   O DRE considera apenas transações com o status `pago`.
--   **Custos Variáveis:** Incluem categorias que contenham `fornecedor`, `insumos`, `comissões`, `comissao`, `embalagens`, `delivery`.
--   **Despesas Operacionais:** Incluem categorias que contenham `aluguel`, `utilidades`, `sistemas`, `marketing`, `folha`, `salários`, `despesas gerais`, `limpeza`.
--   Qualquer despesa paga cuja categoria não seja reconhecida é, por segurança, classificada como **Despesa Operacional** para garantir que o resultado não seja superestimado.
+-   `main.js`: O **orquestrador** que gere o estado da aplicação e coordena a comunicação entre os módulos.
+-   `ui.js`: O único módulo responsável por **manipular o DOM**. Ele desenha a interface, mas não contém lógica de negócio.
+-   `data.js`: Responsável por **tratar os dados brutos** do CSV, normalizando-os para um formato consistente.
+-   `dre.js`: Contém a **lógica de negócio pura** para o cálculo do DRE, isolada de qualquer outra parte do sistema.
+-   `api.js`: Abstrai todas as **chamadas de rede externas**, tornando a comunicação com o n8n simples e centralizada.
 
 ---
 
-## 📡 Exemplo de Requests/Responses (Integração com n8n)
+## 📊 Como o DRE é Calculado
 
-A aplicação comunica com o n8n através de webhooks. Abaixo estão exemplos dos payloads enviados.
+A lógica de cálculo do DRE é explícita e baseada em palavras-chave presentes na coluna `categoria` do CSV.
 
-#### 1. Disparo de Lembrete de Cobrança (`handleSendSim`)
+-   O DRE considera apenas transações com o status `pago`.
+-   **Custos Variáveis:** Incluem categorias como `fornecedor`, `insumos`, `comissões`, `embalagens`, etc.
+-   **Despesas Operacionais:** Incluem categorias como `aluguel`, `utilidades`, `sistemas`, `marketing`, `folha`, etc.
+-   Qualquer despesa não reconhecida é, por segurança, classificada como **Despesa Operacional**.
 
-Quando o botão "Disparar" é clicado, um `POST` é enviado com os dados da transação específica.
+---
 
-**Request (Exemplo):**
-```json
-{
-  "type": "simulate_charge",
-  "data": {
-    "date": "2025-09-27T03:00:00.000Z",
-    "company": "Bar do Alemão",
-    "category": "Folha",
-    "type": "despesa",
-    "value": 4200,
-    "description": "Salários",
-    "status": "previsto"
-  }
-}
+## ⚡ As Automações em Ação (Integração n8n)
 
-#### 2. Envio de Relatório DRE por Email (`handleSendDreEmail`)
+A aplicação comunica com o n8n através de webhooks para executar tarefas de backend.
 
-Quando o botão "Enviar DRE por Email" é clicado, um `POST` é enviado com o DRE atual e os filtros aplicados.
+![Fluxo de Automação no n8n](assets/image_7da6b5.png)
 
-**Request (Exemplo):**
-```json
-{
-  "type": "dre_report",
-  "data": {
-    "dre": {
-      "receitaBruta": 17586.80,
-      "deducoesTaxas": 242.70,
-      "receitaLiquida": 17344.10,
-      "custosVariaveis": 4637.90,
-      "despesasOperacionais": 5640.20,
-      "impostos": 980,
-      "resultadoEBITDA": 6086.00
-    },
-    "filters": {
-      "company": "all",
-      "from": "N/A",
-      "to": "N/A"
+#### 1. Disparo de Lembrete de Cobrança
+
+-   **Ação:** Clique no botão "Disparar" numa transação com status "previsto".
+-   **Payload Enviado:**
+    ```json
+    {
+      "type": "simulate_charge",
+      "data": {
+        "date": "2025-09-27T03:00:00.000Z",
+        "company": "Bar do Alemão",
+        "category": "Folha",
+        "type": "despesa",
+        "value": 4200,
+        "description": "Salários",
+        "status": "previsto"
+      }
     }
-  }
-}
+    ```
+-   **Workflow n8n:** Recebe os dados, formata um email de cobrança em HTML e o envia via Gmail, registando a ação numa planilha do Google Sheets.
+
+#### 2. Envio de Relatório DRE por Email
+
+-   **Ação:** Clique no botão "Enviar DRE por Email".
+-   **Payload Enviado:**
+    ```json
+    {
+      "type": "dre_report",
+      "data": {
+        "dre": {
+          "receitaBruta": 17586.80,
+          "deducoesTaxas": 242.70,
+          "resultadoEBITDA": 6086.00
+        },
+        "filters": {
+          "company": "all",
+          "from": "N/A",
+          "to": "N/A"
+        }
+      }
+    }
+    ```
+-   **Workflow n8n:** Recebe o DRE e os filtros, cria um título e corpo de email dinâmicos (que se adaptam se houver filtros) e envia um relatório formatado em HTML.
+
+---
 
 ## 🚧 Limitações e Próximos Passos
 
--   **Limitação (Performance):** A aplicação funciona 100% no lado do cliente. Arquivos CSV muito grandes (ex: > 50MB) podem impactar a performance do navegador durante o processamento inicial.
-
--   **Próximo Passo (Escalabilidade):** Uma evolução natural seria mover o processamento do CSV para um backend dedicado (ex: Node.js/Python). A aplicação frontend faria o upload do arquivo para o servidor, que processaria e devolveria os dados já tratados. Isso melhoraria a escalabilidade e a performance com grandes volumes de dados.
-
--   **Próximo Passo (Configurações de Automação):** Atualmente, os destinos das automações (como o email de cobrança) estão fixos no workflow do n8n. Uma melhoria significativa seria adicionar uma **aba de "Configurações" na própria interface do dashboard**. Nessa aba, o utilizador poderia inserir e salvar o seu próprio email de destino ou o número de telefone da empresa.
-
--   **Próximo Passo (Integração com WhatsApp):** A automação de lembretes foi implementada com email por ser uma solução universal e de fácil teste. A expansão para o **WhatsApp** seria o próximo passo lógico. Para isso, seria necessário utilizar a API oficial do WhatsApp Business, que exige uma conta empresarial verificada. A estrutura atual, com o n8n, já está preparada para adicionar um "nó" de WhatsApp e expandir essa funcionalidade assim que as credenciais de negócio estiverem disponíveis.
+-   **Limitação (Performance):** A aplicação funciona 100% no cliente. Arquivos CSV muito grandes podem impactar a performance do navegador.
+-   **Próximo Passo (Escalabilidade):** Mover o processamento do CSV para um backend dedicado (ex: Node.js/Python) para suportar maiores volumes de dados.
+-   **Próximo Passo (Configurações na UI):** Criar uma aba de "Configurações" na interface para que o utilizador possa definir o seu próprio email de destino ou número de telefone para as automações, em vez de estarem fixos no n8n.
+-   **Próximo Passo (Integração com WhatsApp):** Expandir a automação de lembretes para o WhatsApp utilizando a API oficial do WhatsApp Business. A arquitetura com o n8n já facilita a adição de um novo "nó" para esta funcionalidade.
