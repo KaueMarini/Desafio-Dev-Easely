@@ -90,7 +90,7 @@ A lógica de cálculo do DRE é explícita e baseada em palavras-chave presentes
 
 A aplicação comunica com o n8n através de webhooks para executar tarefas de backend.
 
-![Fluxo de Automação no n8n](assets/image_7da6b5.png)
+![Fluxo de Automação no n8n](assets/image_7da6b5.PNG)
 
 #### 1. Disparo de Lembrete de Cobrança
 
