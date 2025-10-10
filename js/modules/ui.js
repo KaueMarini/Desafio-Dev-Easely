@@ -1,9 +1,7 @@
-// ui.js — renderização e listeners
 const UIModule = (function() {
     let dreChart = null;
 
-    function initListeners(handlers) {
-        // Listeners para os elementos que ainda existem
+    function initListeners(handlers) {    //Coneção Botoes Html e Js
         document.getElementById('fileInput').addEventListener('change', handlers.onFileUpload);
         document.getElementById('companySelect').addEventListener('change', handlers.onFilterChange);
         document.getElementById('dateFrom').addEventListener('change', handlers.onFilterChange);
@@ -13,8 +11,7 @@ const UIModule = (function() {
         document.getElementById('exportCsvBtn').addEventListener('click', handlers.onExportCSV);
         document.getElementById('sendDreEmailBtn').addEventListener('click', handlers.onSendDreEmail);
         
-        // Listener reativado para cliques nos botões da tabela
-        document.querySelector('#txTable tbody').addEventListener('click', function(event) {
+        document.querySelector('#txTable tbody').addEventListener('click', function(event) { //eu adicionei um unico ouvinte de clique na tabela inteira em vez de um para cada botao assim ele funciona para todos os botoes, inclusive para os que sao criados depois, assim melhorando a performance
             if (event.target && event.target.classList.contains('simulate-btn')) {
                 const transactionData = JSON.parse(event.target.dataset.transaction);
                 handlers.onSendSim(transactionData);
@@ -22,7 +19,7 @@ const UIModule = (function() {
         });
     }
 
-    function getFilters() {
+    function getFilters() {     //Leitura de dados do campo Filtro
         const dateFrom = document.getElementById('dateFrom').value;
         const dateTo = document.getElementById('dateTo').value;
         return {
@@ -33,16 +30,16 @@ const UIModule = (function() {
         };
     }
     
-    function populateCompanySelect(companies) {
+    function populateCompanySelect(companies) { //Popula o Select com as Empresas
         const sel = document.getElementById('companySelect');
         sel.innerHTML = '<option value="all">Todas</option>' + companies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
 
-    function renderCount(count, total) {
+    function renderCount(count, total) {  //Contador de Transações
         document.getElementById('txCount').innerText = `Mostrando ${count} de ${total} transações`;
     }
 
-    function renderCards(dre) {
+    function renderCards(dre) {  //Cartões de Resumo
         const container = document.getElementById('cards');
         container.innerHTML = `
             <div class="card"><small>Receita Bruta</small><div class="card-value">${formatBRL(dre.receitaBruta)}</div></div>
@@ -55,7 +52,7 @@ const UIModule = (function() {
         `;
     }
 
-    function renderTable(data) {
+    function renderTable(data) {  //Tabela
         const tbody = document.querySelector('#txTable tbody');
         tbody.innerHTML = '';
         document.querySelector('#txTable thead tr').innerHTML = `
@@ -66,7 +63,7 @@ const UIModule = (function() {
             <th>Valor</th>
             <th>Ação</th>
         `;
-        data.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(tx => {
+        data.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(tx => {  //Backend Icone Vermelho e Verde
             const tr = document.createElement('tr');
             
             const transactionJsonString = escapeHtml(JSON.stringify(tx));
@@ -86,7 +83,7 @@ const UIModule = (function() {
                 </td>
                 <td>
                     ${tx.status === 'previsto' ? 
-                        `<button class="btn-small simulate-btn" data-transaction='${transactionJsonString}'>Disparar</button>` : 
+                        `<button class="btn-small simulate-btn" data-transaction='${transactionJsonString}'>Disparar</button>` :  
                         '-'}
                 </td>
             `;
@@ -94,7 +91,7 @@ const UIModule = (function() {
         });
     }
     
-    function renderChart(data) {
+    function renderChart(data) { //Grafico
         const ctx = document.getElementById('dreChart').getContext('2d');
         if (dreChart) { dreChart.destroy(); }
 
@@ -128,7 +125,7 @@ const UIModule = (function() {
         });
     }
 
-    function exportToCSV(dreData) {
+    function exportToCSV(dreData) {  //Exportar CSV
         const dreArray = Object.entries(dreData).map(([key, value]) => ({
             Metrica: key,
             Valor: formatBRL(value)
@@ -146,17 +143,15 @@ const UIModule = (function() {
         document.body.removeChild(link);
     }
 
-    // --- NOVA FUNÇÃO DE NOTIFICAÇÃO ---
+    //Função de Notificação
     function showNotification(message, type = 'success') {
         const container = document.getElementById('notification-container');
-        if (!container) return; // Garante que o container exista
+        if (!container) return; 
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
 
         container.appendChild(notification);
-
-        // Remove a notificação após a animação (5 segundos)
         setTimeout(() => {
             notification.remove();
         }, 5000);
@@ -175,6 +170,6 @@ const UIModule = (function() {
         renderChart, 
         renderCount,
         exportToCSV,
-        showNotification // <-- Exporta a nova função
+        showNotification 
     };
 })();

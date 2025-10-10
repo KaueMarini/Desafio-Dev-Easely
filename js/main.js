@@ -1,10 +1,11 @@
-// main.js - O orquestrador da aplicação
+// Garante que todo o código só execute após o carregamento completo do DOM.
 document.addEventListener('DOMContentLoaded', () => {
-    // Estado da aplicação
-    let filteredData = [];
+    
+    // Variáveis que guardam o estado central da aplicação.
+    let filteredData = []; 
     let currentDre = {};
 
-    // Mapeamento dos handlers
+    // Mapeia os eventos da UI para as funções handler, centralizando a lógica de eventos.
     const eventHandlers = {
         onFileUpload: handleFileUpload,
         onFilterChange: handleFilterChange,
@@ -14,11 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
         onSendDreEmail: handleSendDreEmail
     };
 
+    // Inicializa os listeners da UI, delegando a responsabilidade para o módulo de UI.
     UIModule.initListeners(eventHandlers);
 
+    /**
+     * Orquestra o processo de parsing do ficheiro CSV utilizando a biblioteca PapaParse.
+     */
     function handleFileUpload(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
+        
         Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
@@ -35,13 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function applyInitialState() {
+    /**
+     * Prepara o estado inicial da aplicação após o carregamento dos dados.
+     */
+    function applyInitialState() { 
         const all = DataModule.getAll();
+        // Decisão de Performance: Utiliza um Set para extrair empresas únicas de forma eficiente,
+        // evitando loops complexos e melhorando a performance com grandes datasets.
         const companies = Array.from(new Set(all.map(d => d.company).filter(Boolean))).sort();
         UIModule.populateCompanySelect(companies);
         handleFilterChange();
     }
 
+    /**
+     * Função central de reatividade. É chamada sempre que um filtro é alterado para atualizar o estado dos dados.
+     */
     function handleFilterChange() {
         const filters = UIModule.getFilters();
         const all = DataModule.getAll();
@@ -54,9 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (filters.to && new Date(tx.date) > new Date(filters.to)) return false;
             return true;
         });
+
+        // Após qualquer mudança, orquestra a re-renderização completa da UI.
         renderAll();
     }
 
+    /**
+     * Centraliza as chamadas de renderização para garantir que a UI seja sempre consistente com o estado dos dados.
+     */
     function renderAll() {
         currentDre = DreModule.calculateDRE(filteredData);
         UIModule.renderCards(currentDre);
@@ -65,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
         UIModule.renderChart(filteredData);
     }
 
+    /**
+     * Lida com o disparo de lembretes de cobrança via webhook.
+     */
     async function handleSendSim(transactionData) {
         if (!transactionData) {
             UIModule.showNotification("Dados da transação não encontrados.", 'error');
@@ -73,14 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             UIModule.showNotification("A disparar lembrete...", 'success');
             await ApiModule.sendChargeSimulation(transactionData);
-            // Pode adicionar uma notificação de sucesso aqui se o webhook responder
         } catch (err) {
             console.error(err);
             UIModule.showNotification('Erro ao enviar o lembrete.', 'error');
         }
     }
     
-    async function handleSendDreEmail() {
+    /**
+     * Lida com o envio do relatório DRE por email, incluindo feedback de UX (loading).
+     */
+    async function handleSendDreEmail() { 
         const btn = document.getElementById('sendDreEmailBtn');
         const originalText = btn.innerHTML;
         btn.disabled = true;
@@ -88,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const filters = UIModule.getFilters();
-            const payload = {
-                dre: currentDre,
+            const payload = { 
+                dre: currentDre, 
                 filters: {
                     company: filters.company,
                     from: filters.from ? filters.from.toISOString().slice(0, 10) : 'N/A',
@@ -101,13 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error(err);
             UIModule.showNotification('Erro ao enviar o relatório.', 'error');
-        } finally {
+        // Decisão de UX: O bloco 'finally' é usado para garantir que o estado do botão seja restaurado
+        // independentemente do sucesso ou falha da chamada de API, evitando que a UI fique "presa".
+        } finally { 
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
     }
 
-    async function handleGetAi() {
+    /**
+     * Orquestra a chamada à API de IA para obter insights e atualiza a UI com a resposta.
+     */
+    async function handleGetAi() { 
         const btn = document.getElementById('getAiBtn');
         const originalText = btn.innerHTML;
         btn.disabled = true;
