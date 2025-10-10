@@ -4,7 +4,7 @@
 
 Este projeto é a minha abordagem para o desafio técnico da Easely. Mais do que apenas um dashboard, é uma demonstração de como o desenvolvimento moderno pode ser acelerado para entregar valor de negócio rapidamente, combinando uma base de código sólida com ferramentas de automação inteligentes.
 
-[➡️ Aceda à Demo Ao Vivo Aqui ⬅️](https://URL_DA_SUA_DEMO_NA_NETLIFY)
+[➡️ Aceda à Demo Ao Vivo Aqui ⬅️](https://easely.netlify.app/)
 
 ![Screenshot do Dashboard](./assets/image_26223e.PNG)
 
