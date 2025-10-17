@@ -5,6 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let filteredData = []; 
     let currentDre = {};
 
+    // >>> NOVA FUNÇÃO PARA CARREGAR DADOS MOCADOS <<<
+    function loadMockData() {
+        const mockData = MockDataModule.getData();
+        DataModule.setData(mockData);
+        applyInitialState();
+        UIModule.showNotification('Dados de exemplo carregados!', 'success');
+    }
+
     // Mapeia os eventos da UI para as funções handler, centralizando a lógica de eventos.
     const eventHandlers = {
         onFileUpload: handleFileUpload,
@@ -12,11 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
         onGetAi: handleGetAi,
         onExportCSV: () => UIModule.exportToCSV(currentDre),
         onSendSim: handleSendSim,
-        onSendDreEmail: handleSendDreEmail
+        onSendDreEmail: handleSendDreEmail,
+        // >>> ADICIONA O HANDLER PARA O NOVO BOTÃO <<<
+        onLoadMockData: loadMockData 
     };
 
     // Inicializa os listeners da UI, delegando a responsabilidade para o módulo de UI.
     UIModule.initListeners(eventHandlers);
+    
+    // A LINHA QUE CARREGAVA OS DADOS AUTOMATICAMENTE FOI REMOVIDA DAQUI.
 
     /**
      * Orquestra o processo de parsing do ficheiro CSV utilizando a biblioteca PapaParse.
@@ -46,8 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function applyInitialState() { 
         const all = DataModule.getAll();
-        // Decisão de Performance: Utiliza um Set para extrair empresas únicas de forma eficiente,
-        // evitando loops complexos e melhorando a performance com grandes datasets.
         const companies = Array.from(new Set(all.map(d => d.company).filter(Boolean))).sort();
         UIModule.populateCompanySelect(companies);
         handleFilterChange();
@@ -69,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         });
 
-        // Após qualquer mudança, orquestra a re-renderização completa da UI.
         renderAll();
     }
 
@@ -125,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error(err);
             UIModule.showNotification('Erro ao enviar o relatório.', 'error');
-        // Decisão de UX: O bloco 'finally' é usado para garantir que o estado do botão seja restaurado
-        // independentemente do sucesso ou falha da chamada de API, evitando que a UI fique "presa".
         } finally { 
             btn.disabled = false;
             btn.innerHTML = originalText;

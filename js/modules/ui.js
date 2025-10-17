@@ -2,6 +2,7 @@ const UIModule = (function() {
     let dreChart = null;
 
     function initListeners(handlers) {    //Coneção Botoes Html e Js
+        document.getElementById('loadMockDataBtn').addEventListener('click', handlers.onLoadMockData);
         document.getElementById('fileInput').addEventListener('change', handlers.onFileUpload);
         document.getElementById('companySelect').addEventListener('change', handlers.onFilterChange);
         document.getElementById('dateFrom').addEventListener('change', handlers.onFilterChange);
